@@ -117,7 +117,7 @@ python main.py
 - Visit: http://127.0.0.1:5000
 ```
 
-** Authentication Rules**
+**Authentication Rules**
 
 Username: chosen at signup.
 
@@ -135,12 +135,23 @@ If invalid, the signup will fail with a message.
 
  **Screenshots**
 
-![Login](static/Screenshot (252).png)
+## Screenshots  
 
-[SignUp] static/Screenshot (253).png
-[Dashboard] static/Screenshot (254).png
-[Shopping List Reminder AI VOICE] static/Screenshot (255).png
-[Calendar Mark] static/Screenshot (256).png
+### Login  
+![Login](static/Screenshot%20(252).png)  
+
+### SignUp  
+![SignUp](static/Screenshot%20(253).png)  
+
+### Dashboard  
+![Dashboard](static/Screenshot%20(254).png)  
+
+### Shopping List Reminder (AI Voice)  
+![Shopping List Reminder AI VOICE](static/Screenshot%20(255).png)  
+
+### Calendar Mark  
+![Calendar Mark](static/Screenshot%20(256).png)  
+
 
  **Future Enhancements**
 
