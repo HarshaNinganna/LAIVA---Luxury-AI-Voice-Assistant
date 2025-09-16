@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Luxury AI Voice Assistant — Dashboard</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-logged-in="{{ 'true' if session.get('username') else 'false' }}">
+  <!-- Header -->
+  <header class="header">
+    <div class="title">Luxury AI Voice Assistant</div>
+    {% if session.get('username') %}
+      <div class="user-info">
+        {% if session.get('profile_photo') %}
+          <img src="{{ url_for('static', filename='uploads/' ~ session.get('profile_photo')) }}" 
+               alt="Profile Photo" class="profile-photo">
+        {% else %}
+          <img src="{{ url_for('static', filename='default.png') }}" 
+               alt="Default Profile" class="profile-photo">
+        {% endif %}
+        <span>Welcome, {{ session.get('username') }}</span>
+        <form action="{{ url_for('logout') }}" method="get" style="display:inline;">
+          <button type="submit" class="login-btn">Logout</button>
+        </form>
+      </div>
+    {% else %}
+      <button class="login-btn" id="openLogin">Login</button>
+    {% endif %}
+  </header>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>Login</h3>
+      <form id="loginForm" action="{{ url_for('login') }}" method="post">
+        <input type="text" id="loginUsername" name="username" placeholder="Username" required />
+        <input type="password" id="loginPassword" name="password" placeholder="Password" required />
+        <p id="loginError" style="color:red; font-size:13px; display:none;"></p>
+        <button type="submit">Login</button>
+        <p style="color:var(--muted); font-size:13px;">
+          Don’t have an account? 
+          <button type="button" id="switchToSignup" style="background:none;border:none;color:var(--accent);cursor:pointer;">
+            Sign Up
+          </button>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <button class="close" id="closeSignup">&times;</button>
+      <h3>Create Account</h3>
+      <form id="signupForm" action="{{ url_for('signup_page') }}" method="post" enctype="multipart/form-data">
+        <input type="text" id="firstName" name="firstName" placeholder="First Name" required />
+        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required />
+        <input type="email" id="email" name="email" placeholder="Email" required />
+        <input type="text" id="phone" name="phone" placeholder="Phone Number" />
+        <input type="text" id="signupUsername" name="username" placeholder="Username" readonly required />
+        <input type="password" id="signupPassword" name="password" placeholder="Password" required />
+        <p id="signupError" style="color:red; font-size:13px; display:none;"></p>
+        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" />
+        <button type="submit"> Sign Up </button>
+        <p style="color:var(--muted); font-size:13px;">
+          Already have an account? 
+          <button type="button" id="switchToLogin" style="background:none;border:none;color:var(--accent);cursor:pointer;">
+            Login
+          </button>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Force Login if Not Logged In -->
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const loggedIn = document.body.dataset.loggedIn === "true";
+  if (!loggedIn) {
+    document.getElementById("loginModal").style.display = "block";
+  }
+
+  // Auto-generate username: firstname_lastname
+  function generateUsername() {
+    const first = document.getElementById("firstName")?.value.trim();
+    const last = document.getElementById("lastName")?.value.trim();
+    if (first && last) {
+      document.getElementById("signupUsername").value =
+        first.toLowerCase() + "_" + last.toLowerCase();
+    }
+  }
+  document.getElementById("firstName")?.addEventListener("input", generateUsername);
+  document.getElementById("lastName")?.addEventListener("input", generateUsername);
+
+  // Password validation (2 uppercase, 1 special, 2 numbers)
+  function validatePassword(pwd) {
+    const uppercase = (pwd.match(/[A-Z]/g) || []).length >= 2;
+    const special = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+    const digits = (pwd.match(/[0-9]/g) || []).length >= 2;
+    return uppercase && special && digits;
+  }
+
+  // Signup form validation
+  document.getElementById("signupForm").addEventListener("submit", (e) => {
+    const pwd = document.getElementById("signupPassword").value;
+    if (!validatePassword(pwd)) {
+      e.preventDefault();
+      const err = document.getElementById("signupError");
+      err.style.display = "block";
+      err.innerText = " Password must contain at least 2 uppercase letters, 1 special character, and 2 numbers.";
+    }
+  });
+
+  // Login form validation
+  document.getElementById("loginForm").addEventListener("submit", (e) => {
+    const pwd = document.getElementById("loginPassword").value;
+    if (!validatePassword(pwd)) {
+      e.preventDefault();
+      const err = document.getElementById("loginError");
+      err.style.display = "block";
+      err.innerText = " Invalid password format. Must be 2 uppercase letters, 1 special character, and 2 numbers.";
+    }
+  });
+
+  // Switch modal buttons
+  document.getElementById("switchToSignup")?.addEventListener("click", () => {
+    document.getElementById("loginModal").style.display = "none";
+    document.getElementById("signupModal").style.display = "block";
+  });
+  document.getElementById("switchToLogin")?.addEventListener("click", () => {
+    document.getElementById("signupModal").style.display = "none";
+    document.getElementById("loginModal").style.display = "block";
+  });
+
+  // Close modal buttons
+  document.getElementById("closeLogin")?.addEventListener("click", () => {
+    document.getElementById("loginModal").style.display = "none";
+  });
+  document.getElementById("closeSignup")?.addEventListener("click", () => {
+    document.getElementById("signupModal").style.display = "none";
+  });
+});
+  </script>
+
+
+  <!-- Main Container -->
+  <main class="container">
+    <!-- LEFT Sidebar -->
+    <aside class="sidebar">
+      <!-- Overview -->
+      <div class="side-card">
+        <h4>Overview</h4>
+        <p style="color:var(--muted); font-size:13px;">Smart Home Overview & quick controls.</p>
+      </div>
+
+      <!-- Clock -->
+      <div class="side-card">
+        <div class="clock-time" id="clockTime">--:--</div>
+        <div class="clock-date" id="clockDate">-- --- ----</div>
+      </div>
+
+<div class="weather-card">
+  <div class="weather-content">
+    <div class="weather-info">
+      <div class="weather-temp" id="wTemp">--°C</div>
+      <div class="weather-city" id="wCity">Loading...</div>
+      <div class="weather-desc" id="wDesc"></div>
+    </div>
+    <i id="wIcon" class="fa-solid fa-cloud fa-2x"></i>
+  </div>
+  <button id="weatherSettings" 
+    style="padding:8px 14px;font-size:14px;font-weight:600;border:none;border-radius:8px;
+           background:linear-gradient(90deg, var(--accentA), var(--accentB));
+           color:#fff;cursor:pointer;transition:all 0.2s ease;
+           box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+    Set Interval
+  </button>
+</div>
+
+
+    </div>
+        </div>
+      </div>
+
+      <div class="side-card">
+  <h4>Events</h4>
+  <ul id="eventsList" class="events-list">
+    <li>Loading...</li>
+  </ul>
+</div>
+    </aside>
+
+    <!-- CENTER -->
+    <section class="center">
+      <!-- Latest News -->
+      <div class="news-card card">
+        <h4 style="margin:0 0 8px;color:var(--muted);">Latest News</h4>
+        <ul id="newsList">
+          <li>Loading...</li>
+        </ul>
+      </div>
+
+      <!-- MEDIA CARD -->
+<div class="card media-card">
+  <h3 class="media-header">Now Playing</h3>
+
+  <!-- Video/Thumbnail Frame -->
+  <div class="media-frame">
+    <div class="frame-overlay">
+      
+    </div>
+  </div>
+
+  <!-- Mic Button -->
+  <div class="mic-wrapper">
+    <button class="mic-btn">
+      <i class="fas fa-microphone"></i>
+    </button>
+  </div>
+</div>
+
+    </section>
+
+    <!-- RIGHT Sidebar -->
+    <aside class="right">
+      <!-- Shopping List -->
+      <div class="side-card">
+        <h4 style="margin:0 0 8px;color:var(--muted);">Shopping List</h4>
+        <ul id="shoppingPreview" style="margin:0; padding-left:14px; color:#cfeff8;"></ul>
+        <button id="openShoppingPopup" style="padding:8px 14px;font-size:14px;font-weight:600;border:none;border-radius:8px;
+          background:linear-gradient(90deg, var(--accentA), var(--accentB));color:#fff;cursor:pointer;transition:all 0.2s ease;
+          box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+          View Full List
+        </button>
+      </div>
+
+      <!-- Calendar -->
+      <div class="cal-card card" style="padding:12px;">
+        <h4 style="margin:0 0 12px;color:var(--muted);">Calendar</h4>
+        <div id="calNav" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#93c5fd;">
+          <button id="prevMonth" class="nav-btn" aria-label="Previous month">◀</button>
+          <span id="calTitle"></span>
+          <button id="nextMonth" class="nav-btn" aria-label="Next month">▶</button>
+        </div>
+        <div id="calBox"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Shopping Modal -->
+  <div id="shoppingModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <button class="close" id="closeShoppingBtn">&times;</button>
+      <h3>Shopping List</h3>
+      <ul id="shoppingFullList"></ul>
+      <div>
+        <input type="text" id="newItem" placeholder="Add item..." />
+        <button onclick="addItem()">Add</button>
+      </div> <br>
+      <button onclick="resetList()" style="padding:8px 16px;font-size:14px;font-weight:600;border:none;border-radius:8px;
+        background:linear-gradient(90deg, var(--accentA), var(--accentB));color:#fff;cursor:pointer;transition:all 0.2s ease;
+        box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+        Add New List
+      </button>
+      <div>
+        <label for="reminderTime" style="font-size:14px;color:var(--muted);">Set Reminder Time:</label>
+        <input type="time" id="reminderTime" />
+        <button onclick="setShoppingReminder()">Set Reminder</button>
+      </div> <br>
+    </div>
+  </div>
+
+  <!-- Calendar Event Modal -->
+  <div id="calModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <button class="close" id="closeCalModal">&times;</button>
+      <h3 id="modalTitle">Add / Edit Event</h3>
+      <p id="selectedDate"></p>
+      <input id="eventText" type="text" placeholder="Event name (e.g. Pet's Bday)" />
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end;">
+        <button id="deleteEventBtn">Delete</button>
+        <button id="saveEventBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="margin-bottom:20px; color:#93a3b8">
+    © 2025 Luxury AI | Designed by Harsha N
+  </footer>
+
+  <!-- External JS -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
