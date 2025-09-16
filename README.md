@@ -77,7 +77,7 @@ Luxury-AI-Assistant/
 
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/your-username/Luxury-AI-Assistant.git
+   git clone https://github.com/HarshaNinganna/Luxury-AI-Assistant.git
    cd Luxury-AI-Assistant
    ```
 2.**Create virtual environment & install dependencies**
