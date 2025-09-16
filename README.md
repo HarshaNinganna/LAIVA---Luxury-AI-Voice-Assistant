@@ -135,7 +135,8 @@ If invalid, the signup will fail with a message.
 
  **Screenshots**
 
-[Login] static/Screenshot (252).png
+![Login](static/Screenshot (252).png)
+
 [SignUp] static/Screenshot (253).png
 [Dashboard] static/Screenshot (254).png
 [Shopping List Reminder AI VOICE] static/Screenshot (255).png
