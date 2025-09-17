@@ -153,7 +153,7 @@ If invalid, the signup will fail with a message.
 ![Calendar Mark](static/Screenshot%20(256).png)  
 
 
- **Future Enhancements**
+## 📂 Future Enhancements
 
 Add voice recognition AI (e.g., Speech-to-Text API).
 
@@ -164,7 +164,7 @@ Provide multi-user support with role-based dashboards.
 Add dark/light mode toggle.
 
 
-**Author**
+## 🧑‍💼 Author
 
 Harsha N
 
