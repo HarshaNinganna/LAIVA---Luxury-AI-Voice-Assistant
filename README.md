@@ -119,23 +119,23 @@ python main.py
 
 **Authentication Rules**
 
-Username: chosen at signup.
+- Username: chosen at signup.
 
-Password must follow rules:
+- Password must follow rules:
 
-Minimum 6 characters.
+- Minimum 6 characters.
 
-At least 2 uppercase letters.
+- At least 2 uppercase letters.
 
-At least 2 numbers.
+- At least 2 numbers.
 
-At least 1 special character.
+- At least 1 special character.
 
-If invalid, the signup will fail with a message.
+- If invalid, the signup will fail with a message.
 
- **Screenshots**
+ 
 
-## Screenshots  
+## 🎞️ Screenshots  
 
 ### Login  
 ![Login](static/Screenshot%20(252).png)  
@@ -155,20 +155,20 @@ If invalid, the signup will fail with a message.
 
 ## 📂 Future Enhancements
 
-Add voice recognition AI (e.g., Speech-to-Text API).
+- Add voice recognition AI (e.g., Speech-to-Text API).
 
-Integrate Google Calendar API for cloud-synced reminders.
+- Integrate Google Calendar API for cloud-synced reminders.
 
-Provide multi-user support with role-based dashboards.
+- Provide multi-user support with role-based dashboards.
 
-Add dark/light mode toggle.
+- Add dark/light mode toggle.
 
 
 ## 🧑‍💼 Author
 
 Harsha N
 
-GitHub: HarshaNinganna
+ 📎 GitHub: HarshaNinganna
    
    
 
